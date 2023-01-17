@@ -1,0 +1,6 @@
+--
+deployment:
+task:
+- export DEPLOYPATH=/oasiss-solutions.com/
+- /bin/cp index.html $DEPLOYPATH
+- /bin/style.css $DEPLOYPATH
