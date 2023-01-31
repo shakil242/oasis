@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use App\Http\Controllers\CashBackController;
+use App\Http\Controllers\ApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,25 +13,15 @@ use App\Http\Controllers\CashBackController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// })->middleware(['auth', 'verified']);
-
-Route::get('/',[CashBackController::class,'cashBackView'])->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware(['admin'])->group(function () {
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('dashboard', 'dashboard')->name('admin.dashboard');
+    });
 });
-
-
-// my test comment
-
-require __DIR__.'/auth.php';
+Route::controller(ApiController::class)->name('api.')->group(function () {
+    Route::get('api/create', 'apiForm')->name('create');
+    Route::post('api/form-processing', 'form_processing')->name('form_processing');
+});
+Route::get('/', function () {
+    return view('admin.index');
+});
